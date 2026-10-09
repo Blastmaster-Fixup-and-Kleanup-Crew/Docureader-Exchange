@@ -7,7 +7,7 @@ A modern C++17 / Qt 6 PDF application inspired by the classic Adobe Acrobat Exch
 - Qt Widgets desktop shell with File, Edit, View, Document, Tools, Window, and Help menus
 - PDF opening through Qt PDF
 - Multi-page viewing, fit-to-page/fit-to-width, zoom controls, and page navigation
-- Sidebar for document outline/bookmarks
+- Navigation sidebar with rendered page thumbnails and document outline/bookmarks
 - Light and dark interface themes
 - Print action where the Qt PDF backend supports it
 - Status bar with page count and current file
