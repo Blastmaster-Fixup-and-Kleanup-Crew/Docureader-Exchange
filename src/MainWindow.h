@@ -9,6 +9,7 @@ class QLabel;
 class QLineEdit;
 class QPdfDocument;
 class QPdfBookmarkModel;
+class QPdfSearchModel;
 class QPdfView;
 class QSpinBox;
 class QTreeView;
@@ -33,6 +34,10 @@ private slots:
     void toggleSidebar();
     void toggleDarkTheme();
     void showAbout();
+    void performSearch();
+    void nextSearchResult();
+    void previousSearchResult();
+    void updateSearchStatus();
 
 private:
     void createActions();
@@ -46,6 +51,7 @@ private:
     QPdfDocument *m_document = nullptr;
     QPdfView *m_pdfView = nullptr;
     QPdfBookmarkModel *m_bookmarks = nullptr;
+    QPdfSearchModel *m_searchModel = nullptr;
     QTreeView *m_outlineView = nullptr;
     QSpinBox *m_pageSpin = nullptr;
     QComboBox *m_zoomCombo = nullptr;
@@ -56,4 +62,5 @@ private:
     QAction *m_darkThemeAction = nullptr;
     QString m_currentFile;
     bool m_darkTheme = false;
+    int m_searchIndex = -1;
 };
