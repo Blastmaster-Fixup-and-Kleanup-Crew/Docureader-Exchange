@@ -8,7 +8,9 @@
 #include <QFileInfo>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMenu>
 #include <QMenuBar>
+#include <QKeySequence>
 #include <QMessageBox>
 #include <QPdfBookmarkModel>
 #include <QPdfDocument>
@@ -340,8 +342,10 @@ void MainWindow::setFitWidth()
 
 void MainWindow::toggleSidebar()
 {
-    if (m_sidebarAction)
-        m_sidebarAction->toggle();
+    if (!m_sidebarAction)
+        return;
+    if (auto *dock = findChild<QDockWidget *>(QStringLiteral("NavigationDock")))
+        dock->setVisible(m_sidebarAction->isChecked());
 }
 
 void MainWindow::toggleDarkTheme()
