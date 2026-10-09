@@ -15,6 +15,7 @@
 #include <QPdfBookmarkModel>
 #include <QPdfDocument>
 #include <QPdfPageNavigator>
+#include <QPdfSearchModel>
 #include <QPdfView>
 #include <QSpinBox>
 #include <QStatusBar>
@@ -28,7 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_document(new QPdfDocument(this)),
       m_pdfView(new QPdfView(this)),
-      m_bookmarks(new QPdfBookmarkModel(this))
+      m_bookmarks(new QPdfBookmarkModel(this)),
+      m_searchModel(new QPdfSearchModel(this))
 {
     setMinimumSize(1000, 680);
     resize(1380, 900);
@@ -40,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(m_pdfView);
 
     m_bookmarks->setDocument(m_document);
+    m_searchModel->setDocument(m_document);
+    m_pdfView->setSearchModel(m_searchModel);
     createActions();
     createMenus();
     createToolBars();
@@ -93,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar()->setSizeGripEnabled(true);
 
     connect(m_document, &QPdfDocument::statusChanged, this, &MainWindow::updateDocumentState);
+    connect(m_searchModel, &QPdfSearchModel::countChanged, this, &MainWindow::updateSearchStatus);
     connect(m_document, &QPdfDocument::pageCountChanged, this, &MainWindow::updateDocumentState);
     connect(m_pdfView->pageNavigator(), &QPdfPageNavigator::currentPageChanged,
             this, [this](int page) {
@@ -214,7 +219,7 @@ void MainWindow::createMenus()
                 .arg(info.fileName()).arg(info.size() / 1024).arg(m_document->pageCount()));
     });
 
-    menuBar()->addMenu(tr("&Window"));
+    QMenu *windowMenu = menuBar()->addMenu(tr("&Window"));\n    windowMenu->addAction(tr("Next Search Result"), this, &MainWindow::nextSearchResult, QKeySequence(QStringLiteral("F3")));\n    windowMenu->addAction(tr("Previous Search Result"), this, &MainWindow::previousSearchResult, QKeySequence(QStringLiteral("Shift+F3")));
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(action("actionAbout"));
 }
@@ -236,7 +241,7 @@ void MainWindow::createToolBars()
     toolbar->addSeparator();
 
     m_searchEdit = new QLineEdit(this);
-    m_searchEdit->setPlaceholderText(tr("Search document (coming soon)"));
+    m_searchEdit->setPlaceholderText(tr("Find text in PDF…"));
     m_searchEdit->setClearButtonEnabled(true);
     m_searchEdit->setMaximumWidth(280);
     m_searchEdit->setEnabled(false);
@@ -394,7 +399,7 @@ void MainWindow::updateZoomLabel()
         m_zoomCombo->setCurrentText(QStringLiteral("%1%").arg(qRound(m_pdfView->zoomFactor() * 100)));
 }
 
-void MainWindow::showAbout()
+void MainWindow::performSearch()\n{\n    if (!m_searchEdit || m_document->pageCount() == 0)\n        return;\n    const QString query = m_searchEdit->text().trimmed();\n    m_searchModel->setSearchString(query);\n    m_searchIndex = -1;\n    m_pdfView->setCurrentSearchResultIndex(-1);\n    updateSearchStatus();\n    if (!query.isEmpty())\n        nextSearchResult();\n}\n\nvoid MainWindow::nextSearchResult()\n{\n    const int count = m_searchModel->rowCount();\n    if (count <= 0) {\n        updateSearchStatus();\n        return;\n    }\n    m_searchIndex = (m_searchIndex + 1) % count;\n    m_pdfView->setCurrentSearchResultIndex(m_searchIndex);\n    const int page = m_searchModel->data(m_searchModel->index(m_searchIndex, 0),\n                                         QPdfSearchModel::Role::Page).toInt();\n    if (page >= 0)\n        m_pdfView->pageNavigator()->jump(page);\n    updateSearchStatus();\n}\n\nvoid MainWindow::previousSearchResult()\n{\n    const int count = m_searchModel->rowCount();\n    if (count <= 0) {\n        updateSearchStatus();\n        return;\n    }\n    m_searchIndex = (m_searchIndex <= 0) ? count - 1 : m_searchIndex - 1;\n    m_pdfView->setCurrentSearchResultIndex(m_searchIndex);\n    const int page = m_searchModel->data(m_searchModel->index(m_searchIndex, 0),\n                                         QPdfSearchModel::Role::Page).toInt();\n    if (page >= 0)\n        m_pdfView->pageNavigator()->jump(page);\n    updateSearchStatus();\n}\n\nvoid MainWindow::updateSearchStatus()\n{\n    if (!m_statusLabel)\n        return;\n    const int count = m_searchModel->rowCount();\n    if (m_searchModel->searchString().isEmpty()) {\n        updateDocumentState();\n        return;\n    }\n    if (count == 0)\n        m_statusLabel->setText(tr("No matches for ‘%1’").arg(m_searchModel->searchString()));\n    else\n        m_statusLabel->setText(tr("Match %1 of %2 for ‘%3’")\n            .arg(m_searchIndex + 1).arg(count).arg(m_searchModel->searchString()));\n}\n\nvoid MainWindow::showAbout()
 {
     QMessageBox::about(this, tr("About DocuReader Exchange"),
         tr("<h3>DocuReader Exchange</h3>"
