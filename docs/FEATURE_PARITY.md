@@ -16,8 +16,8 @@ Status key:
 | Page number navigation | Implemented (unverified) | Page spin box |
 | Zoom in/out | Implemented (unverified) | Toolbar and shortcuts |
 | Fit page / fit width | Implemented (unverified) | Zoom selector and toolbar |
-| PDF outline/bookmarks | Implemented (unverified) | Navigation dock |
-| Page thumbnails | Planned | Add a thumbnail view with rendered page previews |
+| PDF outline/bookmarks | Implemented (unverified) | Separate Bookmarks tab in the navigation dock |
+| Page thumbnails | Implemented (unverified) | Rendered previews in a dedicated navigation tab |
 | Search text | Implemented (unverified) | QPdfSearchModel, Enter to search |
 | Search result highlighting | Implemented (unverified) | Current match and matches are highlighted by QPdfView |
 | Next/previous search result | Implemented (unverified) | F3 / Shift+F3 |
