@@ -7,7 +7,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 6.4 REQUIRED COMPONENTS Widgets Pdf PdfWidgets)
+find_package(Qt6 6.6 REQUIRED COMPONENTS Widgets Pdf PdfWidgets)
 
 qt_add_executable(DocuReaderExchange
     src/main.cpp
