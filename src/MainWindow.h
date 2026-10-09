@@ -7,6 +7,8 @@ class QAction;
 class QComboBox;
 class QLabel;
 class QLineEdit;
+class QListWidget;
+class QTabWidget;
 class QPdfDocument;
 class QPdfBookmarkModel;
 class QPdfSearchModel;
@@ -38,6 +40,8 @@ private slots:
     void nextSearchResult();
     void previousSearchResult();
     void updateSearchStatus();
+    void refreshThumbnails();
+    void syncThumbnailSelection(int page);
 
 private:
     void createActions();
@@ -53,6 +57,8 @@ private:
     QPdfBookmarkModel *m_bookmarks = nullptr;
     QPdfSearchModel *m_searchModel = nullptr;
     QTreeView *m_outlineView = nullptr;
+    QListWidget *m_thumbnailList = nullptr;
+    QTabWidget *m_navigationTabs = nullptr;
     QSpinBox *m_pageSpin = nullptr;
     QComboBox *m_zoomCombo = nullptr;
     QLabel *m_pageCountLabel = nullptr;
